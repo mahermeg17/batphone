@@ -16,6 +16,7 @@ public class Identity {
 	private String name;
 	private String did;
 	private boolean main;
+	private String profileData = "profile data";
 
 	private static List<Identity> identities;
 
@@ -25,6 +26,7 @@ public class Identity {
 		id.did = result.did;
 		id.name = result.name;
 		id.main = Identity.identities.size() == 0;
+		id.profileData = result.profileData;
 		Identity.identities.add(id);
 		return id;
 	}
@@ -40,6 +42,7 @@ public class Identity {
 					id.did = ent.did;
 					id.name = ent.name;
 					id.main = identities.size() == 0;
+					id.profileData = ent.profileData;
 					identities.add(id);
 				}
 			}
@@ -69,6 +72,14 @@ public class Identity {
 		return did;
 	}
 
+	public String getProfileData() {
+		return profileData;
+	}
+
+	public void setProfileData(String profileData) {
+		this.profileData = profileData;
+	}
+
 	public void setDetails(Context context, String did, String name)
 			throws ServalDFailureException {
 
@@ -80,9 +91,12 @@ public class Identity {
 			throw new IllegalArgumentException(
 					"That number cannot be dialed as it will be redirected to a cellular emergency service.");
 
-		ServalD.KeyringAddResult result = ServalD.keyringSetDidName(this.subscriberId, did == null ? "" : did, name == null ? "" : name);
+		ServalD.KeyringAddResult result = ServalD.keyringSetDidName(
+				this.subscriberId, did == null ? "" : did, name == null ? ""
+						: name, profileData);
 		this.did = result.did;
 		this.name = result.name;
+		this.profileData = result.profileData;
 
 		Control.reloadConfig();
 
@@ -90,6 +104,7 @@ public class Identity {
 			Intent intent = new Intent("org.servalproject.SET_PRIMARY");
 			intent.putExtra("did", this.did);
 			intent.putExtra("sid", this.subscriberId.toString());
+			intent.putExtra("profileData", this.profileData);
 			context.sendStickyBroadcast(intent);
 		}
 	}
@@ -98,6 +113,7 @@ public class Identity {
 	public int hashCode() {
 		return this.subscriberId.hashCode();
 	}
+
 
 	@Override
 	public String toString() {
