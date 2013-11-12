@@ -241,7 +241,8 @@ public class ServalD
 		}
 	}
 
-	public static KeyringAddResult keyringAdd() throws ServalDFailureException,
+	public static KeyringAddResult keyringAdd()
+			throws ServalDFailureException,
 			ServalDInterfaceError
 	{
 		ServalDResult result = command("keyring", "add");
@@ -312,14 +313,16 @@ public class ServalD
 				throws ServalDInterfaceError {
 			super(result);
 			Log.e("ServalD.outv.length", "" + this.outv.length);
-			Log.e("ServalD.outv.0", "" + this.outv[0]);
-			Log.e("ServalD.outv.1", "" + this.outv[1]);
-			Log.e("ServalD.outv.2", "" + this.outv[2]);
-			if (this.outv.length % 3 != 0)
+			/*
+			 * Log.e("ServalD.outv.0", "" + this.outv[0]);
+			 * Log.e("ServalD.outv.1", "" + this.outv[1]);
+			 * Log.e("ServalD.outv.2", "" + this.outv[2]);
+			 */
+			if (this.outv.length % 4 != 0)
 				throw new ServalDInterfaceError("invalid number of fields "
-						+ this.outv.length + " (not multiple of 3)", this);
-			Entry[] entries = new Entry[this.outv.length / 3];
-			for (int i = 0; i != this.outv.length; i += 3)
+						+ this.outv.length + " (not multiple of 4)", this);
+			Entry[] entries = new Entry[this.outv.length / 4];
+			for (int i = 0; i != this.outv.length; i += 4)
 				try {
 					entries[i / 4] = new Entry(
 							new SubscriberId(new String(this.outv[i])),
@@ -327,8 +330,8 @@ public class ServalD
 									this.outv[i + 1]) : null,
 							this.outv[i + 2].length != 0 ? new String(
 									this.outv[i + 2]) : null,
-							this.outv[i + 2].length != 0 ? new String(
-									this.outv[i + 2]) : null
+							this.outv[i + 3].length != 0 ? new String(
+									this.outv[i + 3]) : null
 							);
 				} catch (SubscriberId.InvalidHexException e) {
 					throw new ServalDInterfaceError(

@@ -73,14 +73,15 @@ public class Identity {
 	}
 
 	public String getProfileData() {
-		return profileData;
+		return profileData == null ? "" : profileData;
 	}
 
 	public void setProfileData(String profileData) {
 		this.profileData = profileData;
 	}
 
-	public void setDetails(Context context, String did, String name)
+	public void setDetails(Context context, String did, String name,
+			String profileData)
 			throws ServalDFailureException {
 
 		if (did == null || !did.matches("[0-9+*#]{5,31}"))
@@ -93,7 +94,7 @@ public class Identity {
 
 		ServalD.KeyringAddResult result = ServalD.keyringSetDidName(
 				this.subscriberId, did == null ? "" : did, name == null ? ""
-						: name, profileData);
+						: name, profileData == null ? "" : profileData);
 		this.did = result.did;
 		this.name = result.name;
 		this.profileData = result.profileData;
@@ -117,7 +118,8 @@ public class Identity {
 
 	@Override
 	public String toString() {
-		return this.subscriberId.toString() + " " + did + " " + name;
+		return this.subscriberId.toString() + " " + did + " " + name + " "
+				+ profileData;
 	}
 
 }
